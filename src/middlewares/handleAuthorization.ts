@@ -7,26 +7,27 @@ dotenv.config();
 declare global {
     namespace Express {
         interface Request {
-            user_id?: string;
+            user?: string[];
         }
     }
 }
 
 const handleAuthorization = (req: Request, res: Response, next: NextFunction): void => {
-    const token = req.headers['token'] as string;
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-        res.status(401).send(['Unauthorized user']);
+        res.status(401).json({operationStatus: 'ERROR', message: 'unauthorized user'});
         return;
     }
 
     verify(token, process.env.SECRET as string, (err, decoded: any) => {
         if (err) {
-            res.status(401).send(['Unauthorized user']);
+            res.status(401).json({operationStatus: 'ERROR', message: 'unauthorized user'});
             return;
         }
 
-        req.user_id = decoded.id;
+        req.user = decoded;
 
         next();
     });

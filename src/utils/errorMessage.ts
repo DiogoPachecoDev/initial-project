@@ -1,5 +1,5 @@
 const validatorMessage = (attribute: string): string => {
-    return `Property '${attribute}' is invalid`;
+    return `property '${attribute}' is invalid`;
 };
 
 const notExists = (attribute: string): string => {

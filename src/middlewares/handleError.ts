@@ -1,21 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 
-function mountError(error: any): string[] {
+function getErrorMessage(error: any): string {
     if (error.errors) {
-        return error.errors.map((err: any) => err.message || err.msg);
+        return error.errors[0].msg || error.errors[0].message;
     }
 
     if (error.message) {
-        return [error.message];
+        return error.message;
     }
 
-    return ['An unexpected error occurred, please try again later'];
+    return 'an unexpected error occurred, please try again later';
 }
 
 const handleError = (error: any, req: Request, res: Response, next: NextFunction): void => {
-    const errors = mountError(error);
-    res.status(error.status || 500);
-    res.json(errors);
+    const errorMessage = getErrorMessage(error);
+    res.status(error.status || 500).json({operationStatus: 'ERROR', message: errorMessage});
 };
 
 export default handleError;

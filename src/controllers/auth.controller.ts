@@ -17,7 +17,7 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
             throw response;
         }
 
-        res.status(200).send(response);
+        res.status(200).json({operationStatus: 'SUCCESS', message: 'user authenticated successfully', data: response});
     } catch (error) {
         next(error);
     }

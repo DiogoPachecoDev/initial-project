@@ -1,40 +1,35 @@
 import authModel from '../models/auth.model';
 import createError from 'http-errors';
-import bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import { AuthCredentials } from '../interfaces/auth.interface';
+import { AuthPayload, AuthCredentials, AuthResponse } from '../interfaces/auth.interface';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 
 dotenv.config();
 
-const login = async (auth: { email: string; password: string }): Promise<{ auth: boolean; token: string; user: Omit<AuthCredentials, 'password'> } | createError.HttpError> => {
-    const authCredentials: AuthCredentials | undefined = await authModel.login({ email: auth.email });
+const login = async (auth: AuthPayload): Promise<AuthResponse> => {
+    try {
+        const authCredentials: AuthCredentials | undefined = await authModel.login(auth.partner, auth.user);
 
-    if (!authCredentials || !authCredentials.password) {
-        return createError(401, 'Incorrect credentials');
+        if (!authCredentials || !authCredentials.password) {
+            throw createError(401, 'incorrect credentials');
+        }
+
+        const hashedPassword = crypto.createHash('md5').update(auth.password).digest('hex');
+
+        if (hashedPassword !== authCredentials.password) {
+            throw createError(401, 'incorrect credentials');
+        }
+
+        delete authCredentials.password;
+        const token: string = sign({ id: authCredentials.id }, process.env.SECRET!, { expiresIn: '1h' });
+
+        return {
+            token: token
+        };
+    } catch (err) {
+        throw err;
     }
-
-    const validatePassword = await bcrypt.compare(auth.password, authCredentials.password);
-
-    if (!validatePassword) {
-        return createError(401, 'Incorrect credentials');
-    }
-
-    delete authCredentials.password;
-
-    const secret = process.env.SECRET;
-    
-    if (!secret) {
-        throw createError(500, 'JWT secret is not defined');
-    }
-
-    const token: string = sign({ id: authCredentials.id }, secret, { expiresIn: 1000 });
-
-    return {
-        auth: true,
-        token: token,
-        user: authCredentials
-    };
 };
 
 export { login };

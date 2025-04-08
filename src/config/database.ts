@@ -1,21 +1,25 @@
+import createError from 'http-errors';
+import mysql from "mysql2/promise";
 import dotenv from 'dotenv';
-import mysql, { Pool } from 'mysql2/promise';
 
 dotenv.config();
 
-let pool: Pool | undefined;
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  port: Number(process.env.DB_PORT),
+  waitForConnections: true,
+  connectionLimit: 20,
+  queueLimit: 0,
+  connectTimeout: 10000,
+});
 
-if (!pool) {
-    pool = mysql.createPool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0,
-        connectTimeout: 10000
-    });
-}
-
-export default pool!;
+export const testDatabaseConnection = async () => {
+  try {
+    const connection = await pool.getConnection();
+    connection.release();
+  } catch (error) {
+    throw createError(500, 'database connection failed.');
+  }
+};

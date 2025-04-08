@@ -3,7 +3,8 @@ import { validatorMessage } from '../utils/errorMessage';
 
 const login = (): Array<ReturnType<typeof body>> => {
     return [
-        body('email', validatorMessage('email')).exists().bail().isString(),
+        body('partner', validatorMessage('partner')).exists().bail().isString(),
+        body('user', validatorMessage('user')).exists().bail().isString(),
         body('password', validatorMessage('password')).exists().bail().isString()
     ];
 };
