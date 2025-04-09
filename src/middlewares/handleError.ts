@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-function getErrorMessage(error: any): string {
+function getErrorMessage(error: any, t: (key: string) => string): string {
     if (error.errors) {
         return error.errors[0].msg || error.errors[0].message;
     }
@@ -9,11 +9,11 @@ function getErrorMessage(error: any): string {
         return error.message;
     }
 
-    return 'an unexpected error occurred, please try again later';
+    return t('middlewares.handleError.default');
 }
 
 const handleError = (error: any, req: Request, res: Response, next: NextFunction): void => {
-    const errorMessage = getErrorMessage(error);
+    const errorMessage = getErrorMessage(error, req.t);
     res.status(error.status || 500).json({operationStatus: 'ERROR', message: errorMessage});
 };
 

@@ -1,0 +1,42 @@
+{
+    "controllers": {
+        "authController": {
+            "login": {
+                "success": "Usuario autenticado con éxito"
+            }
+        }
+    },
+    "middlewares": {
+        "handle404Error": "Ruta no encontrada",
+        "handleAuthorization": {
+            "notFound": "Token no encontrado",
+            "invalid": "Token inválido"
+        },
+        "handleError": {
+            "default": "Ocurrió un error inesperado, por favor intente nuevamente más tarde"
+        }
+    },
+    "models": {
+        "authModel": {
+            "lockWarning": "No se pudo obtener la información de bloqueo del socio",
+            "login": "No se pudo obtener la información del usuario",
+            "permissions": "No se pudieron obtener los permisos del usuario",
+            "log": "No se pudo guardar el registro de acceso del usuario"
+        }
+    },
+    "services": {
+        "authService": {
+            "login": {
+                "lockWarning": "Socio DESACTIVADO, por favor contacte a nuestro soporte",
+                "credentials": "Credenciales incorrectas",
+                "inactiveUser": "Este usuario está inactivo"
+            }
+        }
+    },
+    "utils": {
+        "errorMessage": {
+            "invalid": "La propiedad '{{attribute}}' es inválida",
+            "notExists": "La propiedad '{{attribute}}' no existe"
+        }
+    }
+}

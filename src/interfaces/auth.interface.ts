@@ -9,6 +9,7 @@ interface AuthCredentials{
     user: string;
     name: string;
     password?: string;
+    status?: string;
     email: string;
     image: string;
     language: string;

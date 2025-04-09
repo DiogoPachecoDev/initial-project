@@ -1,4 +1,3 @@
-import createError from 'http-errors';
 import mysql from "mysql2/promise";
 import dotenv from 'dotenv';
 
@@ -20,6 +19,6 @@ export const testDatabaseConnection = async () => {
     const connection = await pool.getConnection();
     connection.release();
   } catch (error) {
-    throw createError(500, 'database connection failed.');
+    console.error('Database connection failed:', error);
   }
 };

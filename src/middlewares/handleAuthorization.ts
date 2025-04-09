@@ -17,18 +17,16 @@ const handleAuthorization = (req: Request, res: Response, next: NextFunction): v
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-        res.status(401).json({operationStatus: 'ERROR', message: 'unauthorized user'});
+        res.status(401).json({operationStatus: 'ERROR', message: req.t('middlewares.handleAuthorization.notFound')});
         return;
     }
 
     verify(token, process.env.SECRET as string, (err, decoded: any) => {
         if (err) {
-            res.status(401).json({operationStatus: 'ERROR', message: 'unauthorized user'});
+            res.status(401).json({operationStatus: 'ERROR', message: req.t('middlewares.handleAuthorization.invalid')});
             return;
         }
-
-        req.user = decoded;
-
+        
         next();
     });
 };

@@ -5,19 +5,16 @@ import createErrors from 'http-errors';
 
 const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const t = req.t;
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
             throw createErrors(422, { errors: errors.array() });
         }
 
-        const response = await authService.login(req.body);
+        const response = await authService.login(req.body, t);
 
-        if (response instanceof createErrors.HttpError) {
-            throw response;
-        }
-
-        res.status(200).json({operationStatus: 'SUCCESS', message: 'user authenticated successfully', data: response});
+        res.status(200).json({operationStatus: 'SUCCESS', message: t('controllers.authController.login.success'), data: response});
     } catch (error) {
         next(error);
     }
