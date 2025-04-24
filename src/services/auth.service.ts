@@ -9,13 +9,7 @@ dotenv.config();
 
 const login = async (auth: AuthPayload, t: (key: string) => string): Promise<AuthResponse> => {
     try {
-        const lockWarning: number = await authModel.lockWarning(auth.partner, t);
-
-        if(lockWarning == 1) {
-            throw createError(401, t('services.authService.login.lockWarning'));
-        }
-
-        const authCredentials: AuthCredentials = await authModel.login(auth.partner, auth.user, t);
+        const authCredentials: AuthCredentials = await authModel.login(auth.user, t);
 
         if (!authCredentials || !authCredentials.password) {
             throw createError(401, t('services.authService.login.credentials'));
@@ -27,24 +21,21 @@ const login = async (auth: AuthPayload, t: (key: string) => string): Promise<Aut
             throw createError(401, t('services.authService.login.credentials'));
         }
 
-        if (authCredentials.status == 'i') {
-            throw createError(401, t('services.authService.login.inactiveUser'));
-        }
-
         delete authCredentials.status;
         delete authCredentials.password;
         
-        const permission: object = await authModel.permissions(auth.partner, authCredentials.id, t);
-        const token: string = sign({ ...authCredentials, permission: permission}, process.env.SECRET!, { expiresIn: '24h' });
-        
-        await authModel.log(auth.partner, authCredentials, t);
+        const token: string = sign({ ...authCredentials}, process.env.SECRET!, { expiresIn: '24h' });
 
         return {
             token: token
         };
     } catch (err) {
-        throw err;
+        if (createError.isHttpError(err)) {
+            throw err;
+        }
+        
+        throw createError(500, t('services.authService.login.default'));
     }
 };
 
-export { login };
+export default { login };

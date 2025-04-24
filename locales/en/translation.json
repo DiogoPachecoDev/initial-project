@@ -2,7 +2,7 @@
     "controllers": {
         "authController": {
             "login": {
-                "success": "User authenticated successfully"
+                "success": "User successfully authenticated"
             }
         }
     },
@@ -14,29 +14,32 @@
         },
         "handleError": {
             "default": "An unexpected error occurred, please try again later"
+        },
+        "rateLimiter": {
+            "default": "You have exceeded the request limit per minute"
         }
     },
     "models": {
         "authModel": {
-            "lockWarning": "Unable to fetch partner's lock information",
-            "login": "Unable to fetch user information",
-            "permissions": "Unable to fetch user permissions",
-            "log": "Unable to save user access log"
+            "login": "Unable to fetch user information"
         }
     },
     "services": {
         "authService": {
             "login": {
-                "lockWarning": "Partner DISABLED, please contact our support",
-                "credentials": "Incorrect credentials",
-                "inactiveUser": "This user is inactive"
+                "default": "Unable to authenticate",
+                "credentials": "Incorrect credentials"
             }
         }
     },
-    "utils": {
-        "errorMessage": {
-            "invalid": "Property '{{attribute}}' is invalid",
-            "notExists": "Property '{{attribute}}' does not exist"
+    "validators": {
+        "authValidator": {
+            "login": {
+                "userNotFound": "Fill in the 'User' field",
+                "userInvalid": "Fill in the 'User' field correctly",
+                "passwordNotFound": "Fill in the 'Password' field",
+                "passwordInvalid": "Fill in the 'Password' field correctly"
+            }
         }
     }
 }

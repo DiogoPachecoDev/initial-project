@@ -1,20 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import * as authService from '../services/auth.service';
+import authService from '../services/auth.service';
 import createErrors from 'http-errors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const t = req.t;
-        const errors = validationResult(req);
+        const response = await authService.login(req.body, req.t);
 
-        if (!errors.isEmpty()) {
-            throw createErrors(422, { errors: errors.array() });
-        }
-
-        const response = await authService.login(req.body, t);
-
-        res.status(200).json({operationStatus: 'SUCCESS', message: t('controllers.authController.login.success'), data: response});
+        res.cookie('token', response.token, {httpOnly: true, secure: process.env.ENVIRONMENT === 'production', sameSite: 'strict', maxAge: 24 * 60 * 60 * 1000});
+        res.status(200).json({operationStatus: 'SUCCESS', message: req.t('controllers.authController.login.success')});
     } catch (error) {
         next(error);
     }

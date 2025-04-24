@@ -1,5 +1,4 @@
 interface AuthPayload {
-    partner: string;
     user: string;
     password: string;
 }

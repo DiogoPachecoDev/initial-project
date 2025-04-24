@@ -14,29 +14,32 @@
         },
         "handleError": {
             "default": "Ocorreu um erro inesperado, por favor tente novamente mais tarde"
+        },
+        "rateLimiter": {
+            "default": "Você excedeu o limite de requisições por minuto"
         }
     },
     "models": {
         "authModel": {
-            "lockWarning": "Não foi possível buscar as informações de bloqueio do parceiro",
-            "login": "Não foi possível buscar as informações de usuário",
-            "permissions": "Não foi possível buscar as permissões do usuário",
-            "log": "Não foi possível salvar a log de acesso do usuário"
+            "login": "Não foi possível buscar as informações de usuário"
         }
     },
     "services": {
         "authService": {
             "login": {
-                "lockWarning": "Parceiro DESATIVADO, por favor entre em contato com nosso suporte",
-                "credentials": "Credenciais incorretas",
-                "inactiveUser": "Este usuário está inativo"
+                "default": "Não foi possível realizar a autenticação",
+                "credentials": "Credenciais incorretas"
             }
         }
     },
-    "utils": {
-        "errorMessage": {
-            "invalid": "A propriedade '{{attribute}}' é inválida",
-            "notExists": "A propriedade '{{attribute}}' não existe"
+    "validators": {
+        "authValidator": {
+            "login": {
+                "userNotFound": "Preencha o campo 'Usuário'",
+                "userInvalid": "Preencha o campo 'Usuário' corretamente",
+                "passwordNotFound": "Preencha o campo 'Senha'",
+                "passwordInvalid": "Preencha o campo 'Senha' corretamente"
+            }
         }
     }
 }
